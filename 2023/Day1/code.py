@@ -1,7 +1,5 @@
 # Advent of Code 2023
 
-from code_2 import main
-
 def recursive_check_same_character(line, char_to_check, val_to_replace):
     found = line.find(char_to_check)
     if found == -1:
