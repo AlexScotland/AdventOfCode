@@ -1,4 +1,4 @@
-import math
+import copy
 
 class Hand():
     
@@ -31,14 +31,25 @@ class Hand():
         return occurences
     
     def _get_hand_combo_wild_card(self):
-        # Your logic for handling "J" as a wild card goes here
-        # Modify this method accordingly
-        # For example, you can replace "J" with the highest possible card
-        print("Pre adjustment")
-        print(self.card_hand)
-        print("POST")
-        self.card_hand = self.card_hand.replace("J", max(self.card_hand))
-        print(self.card_hand)
+        if "J" in self.card_hand:
+            copy_of_cards = copy.copy(self.card_hand)
+            all_cards = "T23456789QKA"
+            highest_possible = (0, None)
+            for card in all_cards:
+                self.card_hand = self.card_hand.replace("J", card)
+                pot_val = self._get_hand_combo()
+                if pot_val[1] > highest_possible[0]:
+                    highest_possible = (pot_val[1], copy.copy(self.card_hand))
+                elif pot_val[1] == highest_possible[0]:
+                    if return_winner_card_string(
+                        self.card_hand,
+                        int(pot_val[1]),
+                        highest_possible[1],
+                        int(highest_possible[0])
+                    ):
+                        highest_possible = (pot_val[1], copy.copy(self.card_hand))
+                self.card_hand = copy_of_cards
+            self.card_hand = highest_possible[1]
         return self._get_hand_combo()
 
     def _get_hand_combo(self):
@@ -86,6 +97,54 @@ class HandFactorySol2():
     def create_hand(hand):
         hand_and_point = hand.split()
         return Hand(hand_and_point[0], int(hand_and_point[1]), True)
+
+def return_winner_card_string(hand1_str, hand_1_val, hand2_str, hand_2_val):
+    if hand1_str == hand2_str:
+        ## TIE, USE HIGHEST CARD AT CLOSEST FRONT
+        card_compare = {
+            'A': 14,
+            'K': 13,
+            'Q': 12,
+            'T': 10,
+            '9': 9,
+            '8': 8,
+            '7': 7,
+            '6': 6,
+            '5': 5,
+            '4': 4,
+            '3': 3,
+            '2': 2
+        }
+        for index, card_value in enumerate(hand1_str):
+            print(f"{hand1_str} with {hand2_str}")
+            if card_compare[card_value] > card_compare[hand2_str[index]]:
+                return True
+            elif card_compare[card_value] < card_compare[hand2_str[index]]:
+                return False
+    elif hand_1_val > hand_2_val:
+        return True
+    elif hand_1_val == hand_2_val:
+        card_compare = {
+            'A': 13,
+            'K': 12,
+            'Q': 11,
+            'T': 10,
+            '9': 9,
+            '8': 8,
+            '7': 7,
+            '6': 6,
+            '5': 5,
+            '4': 4,
+            '3': 3,
+            '2': 2
+        }
+        for index, card_value in enumerate(hand1_str):
+            # print(f"{hand1_str} with {hand2_str}")
+            if card_compare[card_value] > card_compare[hand2_str[index]]:
+                return True
+            elif card_compare[card_value] < card_compare[hand2_str[index]]:
+                return False
+    return False
 
 def return_winner(hand1, hand2):
     if hand1.card_value[1] == hand2.card_value[1]:
@@ -144,6 +203,8 @@ def sol(file, factory):
     all_hands_sorted = []
     for hand in file.readlines():
         all_hands_sorted = append_to_list_sorted(all_hands_sorted, factory.create_hand(hand))
+    # for hand in all_hands_sorted:
+    #     print(hand.card_hand)
     all_hands_sorted.reverse()
     return calc_sum(all_hands_sorted)
 
