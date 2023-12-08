@@ -68,6 +68,7 @@ if __name__ == "__main__":
         for v_index in range(len(line)):
             if not line[v_index].isdigit() and line[v_index] != "\n" and line[v_index] != ".":
                 all_nums = get_all_numbers_touching(full_file, line_index, v_index)
+                print(all_nums)
                 for num in all_nums:
                     total_sum += int(num[0])
     print(total_sum)
