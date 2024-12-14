@@ -23,6 +23,16 @@ class Solution1():
             diff_sum += diff
         return diff_sum
 
+class Solution2():
+    def __init__(self):
+        from input_1 import INPUT as input
+        self.solution = self.solve(input)
+
+    def solve(self, input):
+        array_1, array_2 = parse_input(input)
+       
+        return diff_sum
+
 
 if __name__ == "__main__":
     print(Solution1().solution)
